@@ -7,7 +7,14 @@ export type ShipmentOptionType = {
 };
 
 export type OrderType = {
+  id: number;
   name: string;
   amount: number;
+};
+
+export type SmoothieType = {
+  id: number;
+  name: string;
+  imgSrc: string;
   ingredients: string[];
 };

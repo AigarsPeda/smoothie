@@ -1,6 +1,6 @@
-import type { ShipmentOptionType } from "./types/order.types";
+import type { ShipmentOptionType, SmoothieType } from "./types/order.types";
 
-export const SMOOTHIES = [
+export const SMOOTHIES: SmoothieType[] = [
   {
     id: 1,
     name: "Strawberry Banana",
@@ -38,7 +38,14 @@ export const SMOOTHIES = [
   },
   {
     id: 6,
-    name: "Mango Banana",
+    name: "Mango Banana2",
+    ingredients: ["Mango", "Banana", "Milk", "Honey"],
+    imgSrc:
+      "photo-1628557044797-f21a177c37ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
+  },
+  {
+    id: 7,
+    name: "Mango Banana3",
     ingredients: ["Mango", "Banana", "Milk", "Honey"],
     imgSrc:
       "photo-1628557044797-f21a177c37ec?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80",
