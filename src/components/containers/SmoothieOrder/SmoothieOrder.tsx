@@ -31,17 +31,17 @@ const SmoothieOrder: FC = () => {
   const getSmoothieAmount = useCallback(
     (shipmentAmount: ShipmentAmountType) => {
       const smoothiesPerChoice = Math.floor(shipmentAmount / SMOOTHIES.length);
-      const remainder = shipmentAmount % SMOOTHIES.length;
+      const remainderCount = shipmentAmount % SMOOTHIES.length;
 
       return {
-        count: smoothiesPerChoice,
-        remainderCount: remainder,
+        remainderCount,
+        smoothiesPerChoice,
       };
     },
     []
   );
 
-  const getAmountOfSmoothies = useCallback(
+  const getAmountOfSmoothie = useCallback(
     (smoothie: SmoothieType) => {
       const smoothieAmount = order.find(
         (smoothieOrder) => smoothieOrder.id === smoothie.id
@@ -73,7 +73,9 @@ const SmoothieOrder: FC = () => {
     if (isUpdateOrder.current) return;
 
     const newOrder: OrderType[] = [];
-    const { count, remainderCount } = getSmoothieAmount(selectedShipmentAmount);
+    const { smoothiesPerChoice, remainderCount } = getSmoothieAmount(
+      selectedShipmentAmount
+    );
 
     for (let i = 0; i < SMOOTHIES.length; i++) {
       const smoothie = SMOOTHIES[i];
@@ -86,7 +88,9 @@ const SmoothieOrder: FC = () => {
       const smooth: OrderType = {
         id: smoothie.id,
         name: smoothie.name,
-        amount: isRemainder ? remainderCount + count : count,
+        amount: isRemainder
+          ? remainderCount + smoothiesPerChoice
+          : smoothiesPerChoice,
       };
 
       newOrder.push(smooth);
@@ -135,7 +139,7 @@ const SmoothieOrder: FC = () => {
                 }
                 setSelectedShipmentAmount(option.pack);
               }}
-              text={`${option.pack} smoothies for $${option.pricePerSmoothie} each`}
+              text={`${option.pack} pack ${option.pricePerSmoothie} EUR per smoothie`}
             />
           );
         })}
@@ -153,7 +157,7 @@ const SmoothieOrder: FC = () => {
                 ingredients={smoothie.ingredients}
               />
               <SmoothieCount
-                amount={getAmountOfSmoothies(smoothie)}
+                amount={getAmountOfSmoothie(smoothie)}
                 handleAdd={() => {
                   isUpdateOrder.current = true;
 
