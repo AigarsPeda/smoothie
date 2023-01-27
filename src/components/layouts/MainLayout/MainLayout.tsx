@@ -6,7 +6,7 @@ interface MainLayoutProps {
 
 const MainLayout: FC<MainLayoutProps> = ({ children }) => {
   return (
-    <div className="mb-5 grid w-full grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+    <div className="mb-5 grid w-full max-w-[80%] grid-cols-[repeat(auto-fit,minmax(300px,1fr))] gap-5">
       {children}
     </div>
   );

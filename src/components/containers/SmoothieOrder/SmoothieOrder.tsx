@@ -128,19 +128,20 @@ const SmoothieOrder: FC = () => {
       <MainLayout>
         {SHIPMENT_OPTIONS.map((option) => {
           return (
-            <OptionButton
-              key={option.id}
-              isSelected={option.pack === selectedShipmentAmount}
-              handleClick={() => {
-                // If order is changed to a lower amount, then we reset the order
-                if (option.pack < selectedShipmentAmount) {
-                  isUpdateOrder.current = false;
-                  setOrder([]);
-                }
-                setSelectedShipmentAmount(option.pack);
-              }}
-              text={`${option.pack} pack ${option.pricePerSmoothie} EUR per smoothie`}
-            />
+            <div key={option.id} className="max-w-[300px]">
+              <OptionButton
+                isSelected={option.pack === selectedShipmentAmount}
+                handleClick={() => {
+                  // If order is changed to a lower amount, then we reset the order
+                  if (option.pack < selectedShipmentAmount) {
+                    isUpdateOrder.current = false;
+                    setOrder([]);
+                  }
+                  setSelectedShipmentAmount(option.pack);
+                }}
+                text={`${option.pack} pack ${option.pricePerSmoothie} EUR per smoothie`}
+              />
+            </div>
           );
         })}
       </MainLayout>
