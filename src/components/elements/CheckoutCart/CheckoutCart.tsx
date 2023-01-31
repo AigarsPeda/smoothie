@@ -10,7 +10,7 @@ interface CheckoutCartProps {
   isLoading: boolean;
   error: string | null;
   success: string | null;
-  totalSelectedSmoothies: number;
+  totalSelectedSmoothiesInOrder: number;
   handleCheckout: () => Promise<void>;
   selectedShipmentAmount: ShipmentAmountType;
 }
@@ -21,7 +21,7 @@ const CheckoutCart: FC<CheckoutCartProps> = ({
   success,
   isLoading,
   handleCheckout,
-  totalSelectedSmoothies,
+  totalSelectedSmoothiesInOrder,
   selectedShipmentAmount,
 }) => {
   return (
@@ -50,7 +50,7 @@ const CheckoutCart: FC<CheckoutCartProps> = ({
             <CheckoutButton
               isLoading={isLoading}
               handleCheckout={handleCheckout}
-              totalSelectedSmoothies={totalSelectedSmoothies}
+              totalSelectedSmoothiesInOrder={totalSelectedSmoothiesInOrder}
               selectedShipmentAmount={selectedShipmentAmount}
             />
           </div>

@@ -1,15 +1,13 @@
 import type { FC } from "react";
-import { useRef } from "react";
-import { useCallback } from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SHIPMENT_OPTIONS, SMOOTHIES } from "../../../../hardcoded";
 import useLoading from "../../../../hooks/useLoading";
 import type {
   OrderType,
   ShipmentAmountType,
-  SmoothieType,
 } from "../../../../types/order.types";
+import getSelectedAmountOfSmoothie from "../../../../utils/getSelectedAmountOfSmoothie";
+import getSmoothieAmountPerSelection from "../../../../utils/getSmoothieAmountPerSelection";
 import handlePost from "../../../../utils/handlePost.";
 import CheckoutCart from "../../elements/CheckoutCart/CheckoutCart";
 import OptionButton from "../../elements/OptionButton/OptionButton";
@@ -24,39 +22,17 @@ const SmoothieOrder: FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const { isLoading, startLoading, stopLoading } = useLoading();
-  const [totalSelectedSmoothies, setTotalSelectedSmoothies] = useState(0);
+  const [totalSelectedSmoothiesInOrder, setTotalSelectedSmoothiesInOrder] =
+    useState(0);
   const [selectedShipmentAmount, setSelectedShipmentAmount] =
     useState<ShipmentAmountType>(15);
-
-  const getSmoothieAmount = useCallback(
-    (shipmentAmount: ShipmentAmountType) => {
-      const smoothiesPerChoice = Math.floor(shipmentAmount / SMOOTHIES.length);
-      const remainderCount = shipmentAmount % SMOOTHIES.length;
-
-      return {
-        remainderCount,
-        smoothiesPerChoice,
-      };
-    },
-    []
-  );
-
-  const getAmountOfSmoothie = useCallback(
-    (smoothie: SmoothieType) => {
-      const smoothieAmount = order.find(
-        (smoothieOrder) => smoothieOrder.id === smoothie.id
-      );
-      return smoothieAmount ? smoothieAmount.amount : 0;
-    },
-    [order]
-  );
 
   const handleCheckout = async () => {
     startLoading();
 
     const payload = {
       order,
-      totalSelectedSmoothies,
+      totalSelectedSmoothiesInOrder,
     };
 
     const res = await handlePost(payload);
@@ -69,13 +45,13 @@ const SmoothieOrder: FC = () => {
     stopLoading();
   };
 
+  // This useEffect is used to update the order when the shipment amount is changed to a lower amount and on initial render
   useEffect(() => {
     if (isUpdateOrder.current) return;
 
     const newOrder: OrderType[] = [];
-    const { smoothiesPerChoice, remainderCount } = getSmoothieAmount(
-      selectedShipmentAmount
-    );
+    const { smoothiesPerChoice, remainderCount } =
+      getSmoothieAmountPerSelection(selectedShipmentAmount, SMOOTHIES);
 
     for (let i = 0; i < SMOOTHIES.length; i++) {
       const smoothie = SMOOTHIES[i];
@@ -97,16 +73,18 @@ const SmoothieOrder: FC = () => {
     }
 
     setOrder(newOrder);
-  }, [getSmoothieAmount, selectedShipmentAmount]);
+  }, [selectedShipmentAmount]);
 
+  // This useEffect is used to update the total amount of smoothies in the order
   useEffect(() => {
     const total = order.reduce((acc, smoothie) => {
       return acc + smoothie.amount;
     }, 0);
 
-    setTotalSelectedSmoothies(total);
+    setTotalSelectedSmoothiesInOrder(total);
   }, [order]);
 
+  // This closes the success message after 3 seconds
   useEffect(() => {
     if (success) {
       setTimeout(() => {
@@ -158,7 +136,7 @@ const SmoothieOrder: FC = () => {
                 ingredients={smoothie.ingredients}
               />
               <SmoothieCount
-                amount={getAmountOfSmoothie(smoothie)}
+                amount={getSelectedAmountOfSmoothie(smoothie, order)}
                 handleAdd={() => {
                   isUpdateOrder.current = true;
 
@@ -197,7 +175,7 @@ const SmoothieOrder: FC = () => {
             isLoading={isLoading}
             handleCheckout={handleCheckout}
             selectedShipmentAmount={selectedShipmentAmount}
-            totalSelectedSmoothies={totalSelectedSmoothies}
+            totalSelectedSmoothiesInOrder={totalSelectedSmoothiesInOrder}
           />
         </div>
       )}
